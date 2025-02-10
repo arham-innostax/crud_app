@@ -9,6 +9,11 @@ const TodoSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    priority: {
+        type: String,
+        enum: ["low", "medium", "high"], 
+        default: "low", 
+    },
 });
 
 module.exports = mongoose.model('Todo', TodoSchema);

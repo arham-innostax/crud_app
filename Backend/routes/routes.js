@@ -2,10 +2,14 @@ const express = require('express');
 const router = express.Router();
 const Todo = require('../models/modals');
 
+
+
 router.post('/', async (req, res) => {
-    const { title } = req.body;
+    console.log('POST :', req.body);  
+    const { title, priority } = req.body;
     const newTodo = new Todo({
         title,
+        priority
     });
     try {
         const savedTodo = await newTodo.save();
@@ -15,19 +19,20 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+router.put('/:id', async (req, res) => {
+    console.log('PUT :', req.body);  
     try {
-        const todos = await Todo.find();
-        res.json(todos);
+        const updatedTodo = await Todo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(updatedTodo);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-router.put('/:id', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const updatedTodo = await Todo.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.json(updatedTodo);
+        const todos = await Todo.find();
+        res.json(todos);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
