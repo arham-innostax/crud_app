@@ -1,65 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 
-const API_URL='http://localhost:3000/todos'
+const Todo = ({ index, todo, deleteTodo, startEdit }) => {
+  return (
+    <tr className="border-b">
+      <td className="px-4 py-2 text-center">{index + 1}</td>
 
-const Todo = () => {
-    const [todos, setTodos] = useState([]);
-    const [title, setTitle] = useState('');
-
-    useEffect(() => {
-        fetchTodos();
-    }, []);
-
-    const fetchTodos = async () => {
-        const response = await axios.get(API_URL);
-        setTodos(response.data);
-    };
-
-    const createTodo = async (e) => {
-        e.preventDefault();
-        const response = await axios.post(API_URL, { title });
-        setTodos([...todos, response.data]);
-        setTitle('');
-    };
-
-    const updateTodo = async (id, completed) => {
-        const response = await axios.put(`${API_URL}/${id}`, { completed });
-        setTodos(todos.map(todo => (todo._id === id ? response.data : todo)));
-    };
-
-    const deleteTodo = async (id) => {
-        await axios.delete(`${API_URL}/${id}`);
-        setTodos(todos.filter(todo => todo._id !== id));
-    };
-
-    return (
-        <div>
-            <h1>Todo List</h1>
-            <form onSubmit={createTodo}>
-                <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Enter a todo"
-                />
-                <button type="submit">Add Todo</button>
-            </form>
-            <ul>
-                {todos.map((todo) => (
-                    <li key={todo._id}>
-                        <input
-                            type="checkbox"
-                            checked={todo.completed}
-                            onChange={() => updateTodo(todo._id, !todo.completed)}
-                        />
-                        {todo.title}
-                        <button onClick={() => deleteTodo(todo._id)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
+      <td className="px-4 py-2 flex justify-center">
+        <div className="flex justify-center items-center">
+          {todo.title}
         </div>
-    );
-};
+      </td>
+
+      <td className="px-4 py-2 text-center">
+        <button
+          className={`p-2 rounded ${
+            todo.priority === "high"
+              ? "bg-green-500"
+              : todo.priority === "medium"
+              ? "bg-yellow-500"
+              : "bg-red-500"
+          } text-white`}
+          disabled
+        >
+          {todo.priority === "high"
+            ? "High"
+            : todo.priority === "medium"
+            ? "Medium"
+            : "Low"}
+        </button>
+      </td>
+
+      <td className="px-4 py-2">
+        <div className="flex justify-center items-center">
+          <img
+            className="h-5 w-5 cursor-pointer ml-2"
+            src="./delete.png"
+            onClick={deleteTodo}
+            alt="Delete"
+          />
+          <img
+            className="h-5 w-5 cursor-pointer ml-2"
+            src="./pencil.png"
+            onClick={startEdit}
+            alt="Edit"
+          />
+        </div>
+      </td>
+    </tr>
+  );
+}
 
 export default Todo;
